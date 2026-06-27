@@ -1,0 +1,115 @@
+/* ============================================================
+   Fresh Blendz — Alternate tone/style themes
+   Each theme re-maps the design tokens. Apply on <html data-theme="…">
+   to re-skin the whole site, or on any wrapper to scope a preview.
+   :root (tokens.css) is the default "Editorial Ivory" theme.
+   ============================================================ */
+
+/* ---- Midnight — dark, cinematic luxe (Fraunces + Inter) ---- */
+[data-theme='midnight'] {
+  --paper: #15120c;
+  --paper-2: #1d1912;
+  --paper-3: #292318;
+  --card: #211c14;
+  --ink: #f6efe1;
+  --ink-2: #cabfab;
+  --ink-3: #9b9079;
+  --line: rgba(246, 239, 225, 0.13);
+  --line-2: rgba(246, 239, 225, 0.27);
+  --night: #0c0a06;
+  --mango: #ff7d33;
+  --pineapple: #f4b020;
+  --lime: #84c94f;
+  --guava: #ff5f88;
+  --ocean: #2ec7b4;
+  --grape: #b690f8;
+  --pineapple-bright: #ffc54a;
+  --on-accent: #1a1206;
+  --shadow-soft: 0 24px 60px rgba(0, 0, 0, 0.5);
+  --shadow-lg: 0 44px 110px rgba(0, 0, 0, 0.62);
+}
+
+/* ---- Coastal — bright, cool, modern grotesque (Space Grotesk + Inter) ---- */
+[data-theme='coastal'] {
+  --paper: #f4fbfb;
+  --paper-2: #e8f4f3;
+  --paper-3: #d8eceb;
+  --card: #ffffff;
+  --ink: #0f312f;
+  --ink-2: #3a5654;
+  --ink-3: #607b79;
+  --line: rgba(16, 49, 47, 0.12);
+  --line-2: rgba(16, 49, 47, 0.26);
+  --night: #0b2a29;
+  --mango: #df5d0c;
+  --pineapple: #936800;
+  --lime: #3a8628;
+  --guava: #c92a5e;
+  --ocean: #098a81;
+  --grape: #6334b8;
+  --pineapple-bright: #ffc233;
+  --on-accent: #ffffff;
+  --font-display: 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --radius-sm: 8px;
+  --radius: 16px;
+  --radius-lg: 26px;
+}
+
+/* ---- Sunset — warm, artisanal, rounder (Fraunces + Inter) ---- */
+[data-theme='sunset'] {
+  --paper: #fdf3e6;
+  --paper-2: #f8e6d0;
+  --paper-3: #f1d8bb;
+  --card: #fffaf2;
+  --ink: #2a1810;
+  --ink-2: #5c4434;
+  --ink-3: #876b58;
+  --line: rgba(42, 24, 16, 0.14);
+  --line-2: rgba(42, 24, 16, 0.28);
+  --night: #2a160c;
+  --mango: #cf4e08;
+  --pineapple: #a06a00;
+  --lime: #56781d;
+  --guava: #c32a52;
+  --ocean: #1c8770;
+  --grape: #6a39ac;
+  --pineapple-bright: #ffae2b;
+  --on-accent: #fff8ee;
+  --radius-sm: 10px;
+  --radius: 18px;
+  --radius-lg: 30px;
+}
+
+/* ---- Pop — bold, sunny, expressive grotesque (Bricolage + Inter) ---- */
+[data-theme='pop'] {
+  --paper: #fffcf1;
+  --paper-2: #fff2d3;
+  --paper-3: #ffe6a9;
+  --card: #ffffff;
+  --ink: #181203;
+  --ink-2: #483d23;
+  --ink-3: #756743;
+  --line: rgba(24, 18, 3, 0.14);
+  --line-2: rgba(24, 18, 3, 0.3);
+  --night: #161007;
+  --mango: #ef520b;
+  --pineapple: #997000;
+  --lime: #3a8019;
+  --guava: #df185a;
+  --ocean: #098e7f;
+  --grape: #6630c8;
+  --pineapple-bright: #ffc400;
+  --on-accent: #ffffff;
+  --font-display: 'Bricolage Grotesque', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --radius-sm: 12px;
+  --radius: 20px;
+  --radius-lg: 32px;
+}
+
+/* sans-display themes: the italic-serif accent doesn't apply — keep it upright + coloured */
+[data-theme='coastal'] .accent,
+[data-theme='pop'] .accent { font-style: normal; }
+[data-theme='pop'] h1,
+[data-theme='pop'] h2 { letter-spacing: -0.03em; }

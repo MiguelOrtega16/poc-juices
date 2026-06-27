@@ -1,0 +1,88 @@
+/* ============================================================
+   Fresh Blendz — "Bold Bento" design tokens
+   Warm cream canvas, vivid tropical colour-block tiles, big bold
+   Bricolage Grotesque display + Space Grotesk labels + Inter body.
+   ============================================================ */
+
+:root {
+  /* ---- Base (warm cream + ink) ---- */
+  --paper: #fbf6ec;
+  --paper-2: #f5ecda;
+  --paper-3: #efe1c9;
+  --card: #ffffff;
+  --ink: #1a120a;
+  --ink-2: #5b4a36;
+  --ink-3: #8a6b3f;
+  --line: rgba(26, 18, 10, 0.12);
+  --line-2: rgba(26, 18, 10, 0.22);
+  --night: #1a120a;
+
+  /* ---- Vivid tropical fills (used as tile surfaces) ---- */
+  --mango: #ef5f1a;
+  --pineapple: #e8a000;
+  --lemon: #f4d020;
+  --lime: #4f9a2e;
+  --guava: #e23a68;
+  --ocean: #0c9a8b;
+  --grape: #6f3bc2;
+  --sky: #2f86d8;
+  --pineapple-bright: #f4c430;
+  /* text colour to sit on an accent-coloured fill */
+  --on-accent: #ffffff;
+  /* AA-safe accent for small text on the cream canvas */
+  --mango-ink: #c2440a;
+  --ocean-ink: #0a7d72;
+  --grape-ink: #5a2aa8;
+
+  /* ---- Gradients ---- */
+  --grad-hero: linear-gradient(135deg, #ef5f1a 0%, #e23a68 52%, #6f3bc2 100%);
+  --grad-gold: linear-gradient(155deg, #f0b000, #ef5f1a);
+  --grad-ocean: linear-gradient(155deg, #11b4a2, #0a7d8a);
+  --grad-grape: linear-gradient(155deg, #8a4fe0, #5a2aa8);
+  --grad-berry: linear-gradient(155deg, #ff5c86, #c41e57);
+
+  /* ---- Liquid orb gradients (decorative spheres) ---- */
+  --orb-pina: radial-gradient(120% 120% at 30% 25%, #fff4d6 0%, #ffdd86 40%, #f0b21f 75%, #d98a00 100%);
+  --orb-margarita: radial-gradient(120% 120% at 30% 25%, #eaf7c9 0%, #aedd6f 40%, #5fa330 78%, #3c7a1f 100%);
+  --orb-strawberry: radial-gradient(120% 120% at 30% 25%, #ffd5dd 0%, #ff7c9b 38%, #e23a68 78%, #b21e48 100%);
+  --orb-mango: radial-gradient(120% 120% at 30% 25%, #ffe2bd 0%, #ff9d4d 40%, #ef5f1a 78%, #c63f06 100%);
+  --orb-raspberry: radial-gradient(120% 120% at 30% 25%, #ffd0e0 0%, #ff5f96 38%, #d61f6a 78%, #9c1450 100%);
+  --orb-lemon: radial-gradient(120% 120% at 30% 25%, #fff6cc 0%, #ffe066 40%, #f2c200 75%, #cf9b00 100%);
+  --orb-ocean: radial-gradient(120% 120% at 30% 25%, #d6f6ef 0%, #66ddc9 38%, #0c9a8b 78%, #096b61 100%);
+  --orb-coconut: radial-gradient(120% 120% at 30% 25%, #fffaf0 0%, #f0e4cf 45%, #d8c3a0 80%, #b89a6e 100%);
+  --orb-grape: radial-gradient(120% 120% at 30% 25%, #e9d9fb 0%, #b487f0 40%, #6f3bc2 78%, #4d2790 100%);
+  --orb-hero: radial-gradient(120% 120% at 32% 24%, #fff3cf 0%, #ffc24d 30%, #ff7a2c 58%, #ef4b5e 82%, #c81d6a 100%);
+
+  /* ---- Typography ---- */
+  --font-display: 'Bricolage Grotesque', 'Space Grotesk', system-ui, sans-serif;
+  --font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-meta: 'Space Grotesk', 'Inter', system-ui, sans-serif;
+
+  --fs-display: clamp(2.7rem, 7vw, 5.6rem);
+  --fs-h1: clamp(2.3rem, 5.4vw, 4.2rem);
+  --fs-h2: clamp(1.9rem, 4vw, 3rem);
+  --fs-h3: clamp(1.3rem, 2.2vw, 1.8rem);
+  --fs-lead: clamp(1.08rem, 1.5vw, 1.32rem);
+  --fs-body: 1.04rem;
+  --fs-meta: 0.76rem;
+
+  /* ---- Shape ---- */
+  --radius-sm: 12px;
+  --radius: 18px;
+  --radius-lg: 24px;
+  --radius-tile: 22px;
+  --radius-pill: 999px;
+
+  --shadow-soft: 0 16px 38px rgba(26, 18, 10, 0.1);
+  --shadow: 0 22px 50px rgba(26, 18, 10, 0.14);
+  --shadow-lg: 0 34px 80px rgba(26, 18, 10, 0.2);
+
+  --container: 1520px;
+  --container-wide: 1760px;
+  --container-text: 940px;
+  --nav-h: 88px;
+  --gap: clamp(0.7rem, 1.4vw, 1.1rem);
+
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
