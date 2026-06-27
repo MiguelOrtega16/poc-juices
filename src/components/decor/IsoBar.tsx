@@ -22,6 +22,8 @@ export interface IsoModule {
   w: number
   d: number
   h: number
+  /** product colour shown in barrels / jugs (frozen-drink slush, mix, etc.) */
+  tint?: string
 }
 
 interface IsoBarProps {
@@ -53,11 +55,25 @@ const BRAND: Record<IsoKind, string> = {
   cold: '#6f3bc2',
   batch: '#e23a68',
 }
+// product colours shown in barrels / jugs, keyed by station name
+const FLAVOR: Record<string, string> = {
+  'Cha Cha': '#e0466e',
+  'Mango Tango': '#f0962a',
+  Strawberry: '#e85a86',
+  'Bomb Pop': '#3f73d8',
+}
 function darken(hex: string, f: number): string {
   const n = parseInt(hex.slice(1), 16)
   return `rgb(${Math.round(((n >> 16) & 255) * f)},${Math.round(((n >> 8) & 255) * f)},${Math.round((n & 255) * f)})`
 }
 const shade = (kind: IsoKind) => ({ top: BRAND[kind], right: darken(BRAND[kind], 0.82), left: darken(BRAND[kind], 0.64) })
+// blend a colour toward white (t = 0 keeps it, 1 = white) — for frosty product
+function blendWhite(hex: string, t: number): string {
+  const n = parseInt(hex.slice(1), 16)
+  const cr = (n >> 16) & 255, cg = (n >> 8) & 255, cb = n & 255
+  const mix = (c: number) => Math.round(c + (255 - c) * t)
+  return `rgb(${mix(cr)},${mix(cg)},${mix(cb)})`
+}
 
 // --- Face / detail geometry -------------------------------------------------
 function faces(gx: number, gy: number, w: number, d: number, zb: number, h: number) {
@@ -106,46 +122,84 @@ export function IsoBar({ modules, counter, hotKind }: IsoBarProps) {
     const f = faces(m.gx, m.gy, m.w, m.d, cz, m.h)
     const yf = m.gy + m.d
     const detailFill = hot ? 'rgba(255,255,255,0.30)' : 'rgba(26,18,10,0.16)'
+    const dark = hot ? 'rgba(0,0,0,0.20)' : 'rgba(26,18,10,0.28)'
+    const metal = hot ? 'rgba(255,255,255,0.34)' : '#c9c4ba'
+    const tint = m.tint ?? FLAVOR[m.label] ?? (m.variant === 'rail' ? '#7fb04a' : '#cdd3da')
     const tc = proj(m.gx + m.w / 2, m.gy + m.d / 2, cz + m.h) // top centre
+    const top = cz + m.h
 
     const details: JSX.Element[] = []
     if (m.variant === 'machine') {
-      // two hopper lids on top + a console line on the front
-      const hw = (m.w - 0.7) / 2
+      // raised compressor housing on top
+      const hf = faces(m.gx + 0.2, m.gy + 0.24, m.w - 0.4, m.d - 0.48, top, 0.45)
+      details.push(<polygon key="hl" points={poly(hf.left)} fill={hot ? darken(BRAND[m.kind], 0.6) : '#a39c92'} />)
+      details.push(<polygon key="hr" points={poly(hf.right)} fill={hot ? darken(BRAND[m.kind], 0.74) : '#b6b0a6'} />)
+      details.push(<polygon key="ht" points={poly(hf.top)} fill={hot ? darken(BRAND[m.kind], 0.92) : '#d0cabf'} stroke="rgba(26,18,10,0.12)" strokeWidth={0.4} />)
+      // two frozen-product barrels on the front, with sheen + a dispense valve under each
+      const bw = (m.w - 0.56) / 2 - 0.1
       for (let k = 0; k < 2; k++) {
-        const x0 = m.gx + 0.22 + k * (hw + 0.26)
-        details.push(<polygon key={`h${k}`} points={poly(quadTop(x0, m.gy + 0.25, hw, m.d - 0.6, cz + m.h))} fill={detailFill} />)
+        const x0 = m.gx + 0.3 + k * (bw + 0.26)
+        const xc = x0 + bw / 2
+        details.push(<polygon key={`bw${k}`} points={poly(quadFront(x0, x0 + bw, cz + m.h * 0.5, cz + m.h * 0.86, yf))} fill={blendWhite(tint, 0.4)} stroke="rgba(26,18,10,0.24)" strokeWidth={0.5} />)
+        details.push(<polygon key={`bs${k}`} points={poly(quadFront(x0 + 0.05, x0 + bw * 0.42, cz + m.h * 0.53, cz + m.h * 0.83, yf))} fill="rgba(255,255,255,0.42)" />)
+        details.push(<polygon key={`bv${k}`} points={poly(quadFront(xc - 0.06, xc + 0.06, cz + 0.24, cz + 0.52, yf))} fill={dark} />)
       }
+      // stainless drip tray on the counter, just in front of the machine
+      details.push(<polygon key="tray" points={poly(quadTop(m.gx + 0.32, yf, m.w - 0.64, 0.24, cz + 0.1))} fill={metal} stroke="rgba(26,18,10,0.2)" strokeWidth={0.4} />)
     } else if (m.variant === 'icebin') {
-      // four divided ice compartments on top
+      // open insulated bins: dark cavity + recessed ice surface with a facet
       const cw = (m.w - 0.4) / 4
       for (let k = 0; k < 4; k++) {
         const x0 = m.gx + 0.2 + k * cw
-        details.push(<polygon key={`c${k}`} points={poly(quadTop(x0 + 0.06, m.gy + 0.22, cw - 0.16, m.d - 0.44, cz + m.h))} fill={detailFill} />)
+        details.push(<polygon key={`co${k}`} points={poly(quadTop(x0 + 0.07, m.gy + 0.24, cw - 0.18, m.d - 0.48, top))} fill={hot ? 'rgba(0,0,0,0.24)' : 'rgba(26,18,10,0.34)'} />)
+        details.push(<polygon key={`ci${k}`} points={poly(quadTop(x0 + 0.15, m.gy + 0.32, cw - 0.34, m.d - 0.64, top - 0.3))} fill={hot ? '#eafaff' : '#dcedf3'} />)
+        details.push(<polygon key={`cf${k}`} points={poly(quadTop(x0 + 0.22, m.gy + 0.38, (cw - 0.34) * 0.36, (m.d - 0.64) * 0.42, top - 0.29))} fill="rgba(255,255,255,0.72)" />)
       }
     } else if (m.variant === 'rail') {
-      // three mix wells on top
-      const cw = (m.w - 0.4) / 3
+      // mix station: dispenser jugs on the rail, each with a product window + spigot
+      const slot = (m.w - 0.5) / 3
       for (let k = 0; k < 3; k++) {
-        const x0 = m.gx + 0.2 + k * cw
-        details.push(<polygon key={`w${k}`} points={poly(quadTop(x0 + 0.07, m.gy + 0.2, cw - 0.18, m.d - 0.4, cz + m.h))} fill={detailFill} />)
+        const jx = m.gx + 0.25 + k * slot
+        const jw = slot - 0.24
+        const jy = m.gy + m.d * 0.22
+        const jd = m.d * 0.56
+        const jh = 1.15
+        const jf = faces(jx, jy, jw, jd, top, jh)
+        const jyf = jy + jd
+        details.push(<polygon key={`jl${k}`} points={poly(jf.left)} fill={hot ? darken(BRAND[m.kind], 0.7) : '#b1aa9f'} />)
+        details.push(<polygon key={`jr${k}`} points={poly(jf.right)} fill={hot ? darken(BRAND[m.kind], 0.82) : '#c1bbb0'} />)
+        details.push(<polygon key={`jt${k}`} points={poly(jf.top)} fill={hot ? '#fff' : '#d9d3c9'} stroke="rgba(26,18,10,0.12)" strokeWidth={0.4} />)
+        details.push(<polygon key={`jw${k}`} points={poly(quadFront(jx + 0.07, jx + jw - 0.07, top + 0.2, top + jh - 0.2, jyf))} fill={blendWhite(tint, 0.26)} stroke="rgba(26,18,10,0.18)" strokeWidth={0.4} />)
+        const sc = jx + jw / 2
+        details.push(<polygon key={`js${k}`} points={poly(quadFront(sc - 0.05, sc + 0.05, top - 0.02, top + 0.22, jyf))} fill={dark} />)
       }
     } else if (m.variant === 'cooler') {
-      // a glass door inset on the front face
-      const glass = hot ? 'rgba(255,255,255,0.34)' : 'rgba(120,170,180,0.4)'
-      details.push(<polygon key="glass" points={poly(quadFront(m.gx + 0.28, m.gx + m.w - 0.28, cz + 0.3, cz + m.h - 0.45, yf))} fill={glass} stroke="rgba(26,18,10,0.18)" strokeWidth={0.6} />)
+      // upright cooler: glass door, shelves and a few bottles
+      const gx0 = m.gx + 0.28, gx1 = m.gx + m.w - 0.28
+      details.push(<polygon key="glass" points={poly(quadFront(gx0, gx1, cz + 0.3, cz + m.h - 0.45, yf))} fill={hot ? 'rgba(255,255,255,0.3)' : 'rgba(120,170,180,0.4)'} stroke="rgba(26,18,10,0.18)" strokeWidth={0.6} />)
+      const bottleCols = ['#c79a3e', '#9bbf4a', '#c79a3e', '#b0673a']
+      for (let k = 0; k < 4; k++) {
+        const bx = gx0 + 0.22 + k * ((gx1 - gx0 - 0.44) / 3.2)
+        details.push(<polygon key={`bo${k}`} points={poly(quadFront(bx, bx + 0.17, cz + 0.8, cz + m.h - 0.75, yf))} fill={bottleCols[k]} opacity={0.5} />)
+      }
+      for (let k = 0; k < 3; k++) {
+        const z = cz + 0.72 + k * ((m.h - 1.4) / 3)
+        details.push(<polygon key={`sh${k}`} points={poly(quadFront(gx0, gx1, z, z + 0.07, yf))} fill="rgba(255,255,255,0.3)" />)
+      }
     } else if (m.variant === 'cabinet') {
-      // two doors on the front face
+      // two doors + handles
       const mid = m.gx + m.w / 2
       details.push(<polygon key="d0" points={poly(quadFront(m.gx + 0.22, mid - 0.07, cz + 0.25, cz + m.h - 0.3, yf))} fill="none" stroke={detailFill} strokeWidth={1} />)
       details.push(<polygon key="d1" points={poly(quadFront(mid + 0.07, m.gx + m.w - 0.22, cz + 0.25, cz + m.h - 0.3, yf))} fill="none" stroke={detailFill} strokeWidth={1} />)
+      details.push(<polygon key="hh0" points={poly(quadFront(mid - 0.22, mid - 0.13, cz + m.h * 0.42, cz + m.h * 0.6, yf))} fill={detailFill} />)
+      details.push(<polygon key="hh1" points={poly(quadFront(mid + 0.13, mid + 0.22, cz + m.h * 0.42, cz + m.h * 0.6, yf))} fill={detailFill} />)
     }
 
     // label: flavour names sit on the machine; zone names float above
     const onMachine = m.variant === 'machine'
     const label = onMachine ? (
       (() => {
-        const fc = proj(m.gx + m.w / 2, yf, cz + m.h * 0.42)
+        const fc = proj(m.gx + m.w / 2, yf, cz + m.h * 0.28)
         return (
           <text className="iso-mlabel" x={r1(fc.x)} y={r1(fc.y)} textAnchor="middle" fill={hot ? '#fff' : '#3c372f'}>
             {m.label}
