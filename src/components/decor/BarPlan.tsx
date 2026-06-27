@@ -170,7 +170,7 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
           inset: 0;
           border-radius: 26px;
           overflow: hidden;
-          transform-style: preserve-3d;
+          transform-style: flat;
           transform: rotateX(20deg) rotateZ(-1deg) scale(0.92) translateY(2%);
           background:
             radial-gradient(120% 110% at 20% 8%, rgba(12,154,139,0.10), transparent 58%),
@@ -206,14 +206,14 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
         .plan-layer {
           position: absolute;
           inset: 0;
-          transform-style: preserve-3d;
+          transform-style: flat;
         }
 
         /* ===== raised bar counter (3D with thickness) ===== */
         .plan-counter {
           position: absolute;
           border-radius: 28px;
-          transform-style: preserve-3d;
+          transform-style: flat;
           z-index: 1;
         }
         /* the chunky side / front face → reads as thickness */
@@ -248,8 +248,7 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
               rgba(255,255,255,0.055) 0 2px,
               rgba(0,0,0,0.06) 2px 8px
             );
-          opacity: 0.5;
-          mix-blend-mode: overlay;
+          opacity: 0.3;
         }
         /* travelling sheen across the polished top */
         .plan-counter__top::after {
@@ -322,14 +321,13 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
           overflow: hidden;
           z-index: 3;
           transform-origin: center bottom;
+          /* only GPU-cheap properties transition — no box-shadow/filter (repaint heavy) */
           transition:
-            transform 0.42s var(--plan-spring),
-            background 0.34s ease,
-            color 0.34s ease,
-            border-color 0.34s ease,
-            box-shadow 0.42s ease,
-            opacity 0.34s ease,
-            filter 0.34s ease;
+            transform 0.3s var(--plan-spring),
+            background 0.3s ease,
+            color 0.3s ease,
+            border-color 0.3s ease,
+            opacity 0.3s ease;
           animation: plan-mod-in 0.6s var(--plan-spring) backwards;
           animation-delay: var(--plan-delay, 0s);
         }
@@ -431,8 +429,7 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
 
         /* ===== dimming of non-hot modules ===== */
         .plan-root.has-hot .plan-mod:not(.is-hot) {
-          opacity: 0.62;
-          filter: saturate(0.8);
+          opacity: 0.55;
           transform: scale(0.97);
         }
 
@@ -441,7 +438,7 @@ export function BarPlan({ stations, hotKind }: BarPlanProps) {
           background: var(--plan-c);
           color: #fff;
           border-color: #fff;
-          transform: translateZ(40px) scale(1.16);
+          transform: scale(1.16) translateY(-8px);
           z-index: 6;
           box-shadow:
             0 0 0 4px color-mix(in srgb, var(--plan-c) 28%, transparent),

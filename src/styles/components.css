@@ -119,7 +119,8 @@ main { flex: 1; }
 .vfilter__count { font-size: 0.72rem; font-variant-numeric: tabular-nums; opacity: 0.7; }
 
 .vgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(258px, 1fr)); gap: var(--gap); }
-.vcard { display: flex; flex-direction: column; text-align: left; background: var(--card); border: none; border-radius: var(--radius-tile); overflow: hidden; box-shadow: var(--shadow-soft); padding: 0 0 1.1rem; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); }
+.vcard { display: flex; flex-direction: column; text-align: left; background: var(--card); border: none; border-radius: var(--radius-tile); overflow: hidden; box-shadow: var(--shadow-soft); padding: 0 0 1.1rem; transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease); animation: vcardIn 0.4s var(--ease-out) both; }
+@keyframes vcardIn { from { opacity: 0; transform: translateY(14px); } }
 .vcard:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
 .vcard__media { position: relative; aspect-ratio: 16 / 10; overflow: hidden; background: var(--paper-3); }
 .vcard__media img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s var(--ease); }

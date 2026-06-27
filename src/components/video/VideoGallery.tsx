@@ -42,7 +42,7 @@ export function VideoGallery({ videos, filterable = true }: VideoGalleryProps) {
         </div>
       )}
 
-      <div className="vgrid" aria-live="polite">
+      <div className="vgrid" aria-live="polite" key={filter}>
         {shown.map((v, i) => (
           <VideoCard key={v.id + v.title} video={v} index={i} onPlay={setActive} />
         ))}

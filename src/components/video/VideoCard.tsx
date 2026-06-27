@@ -15,9 +15,9 @@ export function VideoCard({ video, onPlay, index = 0 }: VideoCardProps) {
   const thumb = video.thumb ?? `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`
   return (
     <button
-      className="vcard reveal"
+      className="vcard"
       data-cat={video.category}
-      data-delay={(index % 4) + 1}
+      style={{ animationDelay: `${(index % 8) * 0.05}s` }}
       onClick={() => onPlay(video)}
       aria-label={`Play ${video.title} recipe video`}
     >
