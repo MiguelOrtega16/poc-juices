@@ -4,56 +4,67 @@ import { PageHero } from '../components/PageHero'
 import { SectionHeading } from '../components/SectionHeading'
 import { CtaBand } from '../components/CtaBand'
 import { Icon } from '../components/Icon'
-import { BarPlan } from '../components/decor/BarPlan'
+import { IsoBar } from '../components/decor/IsoBar'
+import type { IsoKind, IsoModule } from '../components/decor/IsoBar'
 
-type Station = { label: string; kind: 'machine' | 'mix' | 'cold' | 'batch'; top: string; left: string; w: string; h: string }
-type Layout = { id: string; name: string; blurb: string; stations: Station[] }
+type Layout = { id: string; name: string; blurb: string; counter: { w: number; d: number; h: number }; modules: IsoModule[] }
 
-const KINDS: { key: Station['kind']; label: string; desc: string; swatch: string }[] = [
-  { key: 'machine', label: 'Drink Machines', desc: 'Taylor frozen-beverage freezers', swatch: 'var(--ocean)' },
-  { key: 'mix', label: 'Mix Stations', desc: 'Fresh Blendz mixes, ready to pour', swatch: 'var(--mango)' },
-  { key: 'cold', label: 'Cold Storage', desc: 'Reach-ins & walk-in for fresh mixes', swatch: 'var(--grape)' },
-  { key: 'batch', label: 'Batch & Garnish', desc: 'Pre-batched best-sellers + garnish rail', swatch: 'var(--guava)' },
+const KINDS: { key: IsoKind; label: string; desc: string; swatch: string }[] = [
+  { key: 'machine', label: 'Drink Machines', desc: 'Taylor freezers — Cha Cha, Mango Tango, Strawberry, Bomb Pop', swatch: '#0c9a8b' },
+  { key: 'mix', label: 'Mix Stations', desc: 'Fresh Blendz mixes & back-up batches, ready to pour', swatch: '#ef5f1a' },
+  { key: 'cold', label: 'Cold Storage', desc: 'Walk-in, reach-ins & the upright beer cooler', swatch: '#6f3bc2' },
+  { key: 'batch', label: 'Batch & Service', desc: 'Batch cocktails, monster cups, dry storage & ice bins', swatch: '#e23a68' },
 ]
 
+// Real station names lifted from a Fresh Blendz bar plan. Coordinates are on an
+// isometric floor grid (gx → right, gy → back, sizes in grid units).
 const LAYOUTS: Layout[] = [
   {
     id: 'island',
     name: 'Center Island Bar',
-    blurb: 'A 360° island that serves guests on every side. Machines anchor the back line; mix and garnish stations sit within arm’s reach for fast, photogenic builds.',
-    stations: [
-      { label: 'Taylor 432', kind: 'machine', top: '8%', left: '20%', w: '24%', h: '16%' },
-      { label: 'Taylor 432', kind: 'machine', top: '8%', left: '56%', w: '24%', h: '16%' },
-      { label: 'Mix Rail', kind: 'mix', top: '40%', left: '12%', w: '30%', h: '14%' },
-      { label: 'Mix Rail', kind: 'mix', top: '40%', left: '58%', w: '30%', h: '14%' },
-      { label: 'Garnish', kind: 'batch', top: '70%', left: '20%', w: '26%', h: '14%' },
-      { label: 'Batch Cooler', kind: 'cold', top: '70%', left: '54%', w: '26%', h: '14%' },
+    blurb: 'A 360° island that serves guests on every side. Four flavor machines anchor the back line — Cha Cha, Mango Tango, Strawberry, Bomb Pop — with mixes, batch cocktails and ice bins within arm’s reach for fast, photogenic builds.',
+    counter: { w: 22, d: 7, h: 3 },
+    modules: [
+      { id: 'batch', label: 'Batch Cocktails', kind: 'batch', variant: 'cabinet', gx: 0.7, gy: 1, w: 2.4, d: 2, h: 4.6 },
+      { id: 'cha', label: 'Cha Cha', kind: 'machine', variant: 'machine', gx: 3.6, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'mango', label: 'Mango Tango', kind: 'machine', variant: 'machine', gx: 5.7, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'straw', label: 'Strawberry', kind: 'machine', variant: 'machine', gx: 7.8, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'bomb', label: 'Bomb Pop', kind: 'machine', variant: 'machine', gx: 9.9, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'beer', label: 'Beer', kind: 'cold', variant: 'cooler', gx: 12.1, gy: 1, w: 2.3, d: 2, h: 5.6 },
+      { id: 'mixes', label: 'Mixes', kind: 'mix', variant: 'rail', gx: 14.9, gy: 1.2, w: 3.4, d: 1.8, h: 2.2 },
+      { id: 'cups', label: 'Monster Cups', kind: 'batch', variant: 'cabinet', gx: 18.7, gy: 1, w: 2.4, d: 2, h: 4.2 },
+      { id: 'ice', label: 'Ice Bins', kind: 'batch', variant: 'icebin', gx: 4.2, gy: 4.6, w: 4.2, d: 1.6, h: 1.4 },
+      { id: 'dry', label: 'Dry Storage', kind: 'cold', variant: 'cabinet', gx: 12.4, gy: 4.6, w: 4, d: 1.6, h: 1.5 },
     ],
   },
   {
     id: 'resort',
     name: 'High-Volume Resort',
-    blurb: 'Built for peak-hour throughput at a pool or resort bar. A wall of machines plus pre-batch storage keeps lines moving when hundreds of guests arrive at once.',
-    stations: [
-      { label: 'Taylor 432', kind: 'machine', top: '8%', left: '8%', w: '20%', h: '15%' },
-      { label: 'Taylor 432', kind: 'machine', top: '8%', left: '32%', w: '20%', h: '15%' },
-      { label: 'Taylor 432', kind: 'machine', top: '8%', left: '56%', w: '20%', h: '15%' },
-      { label: 'Taylor 430', kind: 'machine', top: '8%', left: '80%', w: '14%', h: '15%' },
-      { label: 'Mix Station', kind: 'mix', top: '40%', left: '10%', w: '36%', h: '14%' },
-      { label: 'Batch Backup', kind: 'batch', top: '40%', left: '56%', w: '34%', h: '14%' },
-      { label: 'Walk-in Cooler', kind: 'cold', top: '70%', left: '12%', w: '32%', h: '16%' },
-      { label: 'Ice Bins', kind: 'cold', top: '70%', left: '56%', w: '32%', h: '16%' },
+    blurb: 'Built for peak-hour throughput at a pool or resort bar. A wall of flavor machines plus a walk-in cooler and back-up batches keeps lines moving when hundreds of guests arrive at once.',
+    counter: { w: 24, d: 7, h: 3 },
+    modules: [
+      { id: 'walkin', label: 'Walk-in Cooler', kind: 'cold', variant: 'cooler', gx: 0.7, gy: 1, w: 3.2, d: 2.4, h: 6 },
+      { id: 'cha', label: 'Cha Cha', kind: 'machine', variant: 'machine', gx: 4.6, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'mango', label: 'Mango Tango', kind: 'machine', variant: 'machine', gx: 6.7, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'straw', label: 'Strawberry', kind: 'machine', variant: 'machine', gx: 8.8, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'bomb', label: 'Bomb Pop', kind: 'machine', variant: 'machine', gx: 10.9, gy: 1, w: 1.7, d: 2, h: 3.6 },
+      { id: 'beer', label: 'Beer', kind: 'cold', variant: 'cooler', gx: 13.1, gy: 1, w: 2.2, d: 2, h: 5.4 },
+      { id: 'backup', label: 'Back-up Batches', kind: 'mix', variant: 'rail', gx: 15.8, gy: 1.2, w: 3.4, d: 1.8, h: 2.2 },
+      { id: 'cups', label: 'Monster Cups', kind: 'batch', variant: 'cabinet', gx: 19.6, gy: 1, w: 2.4, d: 2, h: 4.2 },
+      { id: 'ice', label: 'Ice Bins', kind: 'batch', variant: 'icebin', gx: 5, gy: 4.6, w: 5, d: 1.6, h: 1.4 },
+      { id: 'dry', label: 'Dry Storage', kind: 'cold', variant: 'cabinet', gx: 13, gy: 4.6, w: 4.5, d: 1.6, h: 1.5 },
     ],
   },
   {
     id: 'compact',
     name: 'Compact / Pop-Up',
-    blurb: 'A small footprint for a service bar, lounge or event activation. One countertop machine and a tidy mix station deliver frozen cocktails anywhere there’s power.',
-    stations: [
-      { label: 'Taylor 428', kind: 'machine', top: '12%', left: '30%', w: '40%', h: '20%' },
-      { label: 'Mix Station', kind: 'mix', top: '46%', left: '14%', w: '34%', h: '16%' },
-      { label: 'Reach-in', kind: 'cold', top: '46%', left: '54%', w: '32%', h: '16%' },
-      { label: 'Garnish Rail', kind: 'batch', top: '72%', left: '28%', w: '44%', h: '14%' },
+    blurb: 'A small footprint for a service bar, lounge or event activation. One multi-flavor machine, a tidy mix rail and a reach-in deliver frozen cocktails anywhere there’s power.',
+    counter: { w: 11, d: 6, h: 3 },
+    modules: [
+      { id: 'reach', label: 'Reach-in', kind: 'cold', variant: 'cooler', gx: 0.7, gy: 1, w: 2.4, d: 2, h: 4.6 },
+      { id: 'cha', label: 'Cha Cha', kind: 'machine', variant: 'machine', gx: 3.6, gy: 1, w: 2.6, d: 2, h: 3.8 },
+      { id: 'mixes', label: 'Mixes', kind: 'mix', variant: 'rail', gx: 6.8, gy: 1.2, w: 2.6, d: 1.8, h: 2.2 },
+      { id: 'ice', label: 'Ice Bins', kind: 'batch', variant: 'icebin', gx: 3.4, gy: 3.8, w: 3, d: 1.4, h: 1.3 },
     ],
   },
 ]
@@ -75,7 +86,7 @@ const FEATURES = ['25+ Years Design Experience', 'High Volume & High End', 'Prof
 
 export function EquipmentPrograms() {
   const [active, setActive] = useState(0)
-  const [hotKind, setHotKind] = useState<Station['kind'] | null>(null)
+  const [hotKind, setHotKind] = useState<IsoKind | null>(null)
   const layout = LAYOUTS[active]
 
   return (
@@ -121,11 +132,13 @@ export function EquipmentPrograms() {
             </div>
             <div className="builder__body">
               <div className="builder__stage">
-                <BarPlan key={layout.id} stations={layout.stations} hotKind={hotKind} />
+                <IsoBar key={layout.id} modules={layout.modules} counter={layout.counter} hotKind={hotKind} />
               </div>
               <div className="builder__info">
-                <h3>{layout.name}</h3>
-                <p>{layout.blurb}</p>
+                <div className="builder__head">
+                  <h3>{layout.name}</h3>
+                  <p>{layout.blurb}</p>
+                </div>
                 <div className="legend">
                   {KINDS.map((k) => (
                     <button key={k.key} type="button" aria-pressed={hotKind === k.key} className="legend__item" onMouseEnter={() => setHotKind(k.key)} onMouseLeave={() => setHotKind(null)} onFocus={() => setHotKind(k.key)} onBlur={() => setHotKind(null)}>
